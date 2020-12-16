@@ -1,29 +1,19 @@
-const findAccountById = (accounts, id) => accounts.find(element => element.id === id);
+const findAccountById = (accounts, id) => accounts.find(account => account.id === id);  // Return the account with matching id
 
+const sortAccountsByLastName = (accounts) => accounts.sort((wordA, wordB) => wordA.name.last.toLowerCase() > wordB.name.last.toLowerCase() ? 1 : -1); // Return accounts sorted by last name
 
-const sortAccountsByLastName = (accounts) => accounts.sort((wordA, wordB) => wordA.name.last.toLowerCase() > wordB.name.last.toLowerCase() ? 1 : -1);
-
-
-function numberOfBorrows(account, books) {
-  let num = 0;
-  for (let key in books) {
-    num += books[k].borrows.filter(e => e.id === account.id).length;
-  }
-  return num;
-}
+const numberOfBorrows = (account, books) => books.reduce((acc, borrower) => acc + borrower.borrows.filter(borrowed => borrowed.id === account.id).length, 0); // Returns number of borrows that match account id
 
 function booksInPossession(account, books, authors) {
-  const returnArr = [];
-  for (let key in books) {
-    if(books[key].borrows.some(element => element.id === account.id && !element.returned)){
-      const bookObject = books[key];
-      bookObject.author = authors.find(element => element.id === bookObject.authorId);
-
+  const returnArr = []; // Declare our empty return array
+  for (let book in books) {
+    if (books[book].borrows.some(borrowed => borrowed.id === account.id && !borrowed.returned)) { // If id is a match and item is not returned
+      const bookObject = books[book];  // bookObject assigned to book that met condition
+      bookObject.author = authors.find(author => author.id === bookObject.authorId); // Author is embedded into our bookObject with matching id
       returnArr.push(bookObject);
     }
   }
-  
-  return returnArr;
+  return returnArr; 
 }
 
 module.exports = {
