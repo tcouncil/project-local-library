@@ -1,81 +1,51 @@
-const totalBooksCount = (books) => books.length;
+const totalBooksCount = (books) => books.length;  // return length of books array
 
-const totalAccountsCount = (accounts) => accounts.length;
+const totalAccountsCount = (accounts) => accounts.length; // return length of accounts array
 
-function booksBorrowedCount(books) {
-  // should return the total number of books that are currently borrowed
-  let num = 0;
-  for (let key in books) {
-    num += books[key].borrows.filter(element => !element.returned).length;
-  }
-  return num;
-}
+const booksBorrowedCount = (books) => books.reduce((acc, book) => acc + book.borrows.filter(book=> !book.returned).length, 0); // Returns number of borrows that haven't been returned
 
 function mostCommonGenres(books) {
-  // should return an ordered list of most common genres
-  // should limit the list to the top five
-  const counterArr = [];
-  const returnArr = [];
-  
+  const returnArr = []; // Declare our empty return array
+
   // Add genres to array
-  for(let key in books){
-    const genre = books[key].genre;
-    counterArr.push(genre);    
+  let genreArr = books.map(book => book.genre);
+
+  // Compact genres into a nested array
+  const compactArr = [];
+  for (let genre in genreArr) {
+    compactArr.push(genreArr.filter(genreElement => genreElement === genreArr[genre]));
   }
-  
-  // Combine genres into a nested array
-  const compactArr= [];
-  for(let genre in counterArr){
-        compactArr.push(counterArr.filter(element => element === counterArr[genre]));
-  }
-  
+
   // Create object and push to return array while checking if genre exists in the return array
   const existingGenre = [];
-  for(let key in compactArr){
-    const obj = {};
-    if(!existingGenre.some(element => element === compactArr[key][0])){
-      obj.name = compactArr[key][0];
-      obj.count = compactArr[key].length;
-      
+  for (let key in compactArr) {
+    if (!existingGenre.some(genre => genre === compactArr[key][0])) {
       existingGenre.push(compactArr[key][0]); // Add genre to existing genre list
-      returnArr.push(obj);
+      returnArr.push({ name: compactArr[key][0], count: compactArr[key].length });
     }
   }
-  
-  // Return a sorted and spliced array
-  return returnArr.sort((a, b) => a.count > b.count ? -1 : 1).splice(0,5);
+  return returnArr.sort((gerneA, genreB) => gerneA.count > genreB.count ? -1 : 1).slice(0, 5); // Return our sorted and sliced array
 }
 
 function mostPopularBooks(books) {
-  // should return an ordered list of most popular books
-  // should limit the list to the top five
-  const returnArr = [];
-  
+  const returnArr = []; // Declare our empty return array
+
   // Get borrows length for each book and assigns key/value pair accordingly
-  for(let key in books){
-    const obj = {};
-    obj.name = books[key].title;
-    obj.count = books[key].borrows.length;
-    returnArr.push(obj);    
+  for (let book in books) {
+    returnArr.push({ name: books[book].title, count: books[book].borrows.length });
   }
-  
-  return returnArr.sort((a, b) => a.count > b.count ? -1 : 1).splice(0,5);
+  return returnArr.sort((popularA, popularB) => popularA.count > popularB.count ? -1 : 1).slice(0, 5); // Return our sorted and sliced array
 }
 
 function mostPopularAuthors(books, authors) {
-  // should return an ordered list of most popular authors
-  // should limit the list to the top five
-  const returnArr = [];
-  
-  for(let key in books){
-    const obj = {};
-    const author = authors.find(e => e.id === books[key].authorId);
-    
-    obj.name = `${author.name.first} ${author.name.last}`;
-    obj.count = books[key].borrows.length;
-    returnArr.push(obj);    
+  const returnArr = []; // Declare our empty return array
+
+  for (let author in authors) {
+    const currentAuthor = authors[author];  // Assign the current author we're working with 
+    const authorBorrowedCount = books.filter(book => book.authorId === currentAuthor.id).reduce((acc, book) => acc + book.borrows.length, 0); // The amount of times the author's books has been borrowed
+    returnArr.push({ name: `${currentAuthor.name.first} ${currentAuthor.name.last}`, count: authorBorrowedCount });
   }
-  return returnArr.sort((a, b) => a.count > b.count ? -1 : 1).splice(0,5);
+  return returnArr.sort((authorA, authorB) => authorA.count > authorB.count ? -1 : 1).slice(0, 5);  // Return our sorted and sliced array
 }
 
 module.exports = {
