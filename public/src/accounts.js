@@ -5,7 +5,7 @@ const sortAccountsByLastName = (accounts) => accounts.sort((wordA, wordB) => wor
 function numberOfBorrows(account, books) {
   let num = 0;
   for (let key in books) {
-    num += books[k].borrows.filter(e => e.id === account.id).length;
+    num += books[key].borrows.filter(element => element.id === account.id).length;
   }
   return num;
 }
