@@ -2,30 +2,21 @@ const totalBooksCount = (books) => books.length;  // return length of books arra
 
 const totalAccountsCount = (accounts) => accounts.length; // return length of accounts array
 
-const booksBorrowedCount = (books) => books.reduce((acc, book) => acc + book.borrows.filter(book=> !book.returned).length, 0); // Returns number of borrows that haven't been returned
+const booksBorrowedCount = (books) => books.reduce((acc, book) => acc + book.borrows.filter(book => !book.returned).length, 0); // Returns number of borrows that haven't been returned
 
 function mostCommonGenres(books) {
-  const returnArr = []; // Declare our empty return array
-
-  // Add genres to array
-  let genreArr = books.map(book => book.genre);
-
-  // Compact genres into a nested array
-  const compactArr = [];
-  for (let genre in genreArr) {
-    compactArr.push(genreArr.filter(genreElement => genreElement === genreArr[genre]));
+  let genre = {}
+  const returnArr = [];
+  for (const book of books) {
+    genre[book.genre] ? genre[book.genre] += 1 : genre[book.genre] = 1;
   }
 
-  // Create object and push to return array while checking if genre exists in the return array
-  const existingGenre = [];
-  for (let key in compactArr) {
-    if (!existingGenre.some(genre => genre === compactArr[key][0])) {
-      existingGenre.push(compactArr[key][0]); // Add genre to existing genre list
-      returnArr.push({ name: compactArr[key][0], count: compactArr[key].length });
-    }
+  for (let i = 0; i < Object.keys(genre).length; i++) {
+    returnArr.push({ name: Object.keys(genre)[i], count: Object.values(genre)[i] });
   }
   return returnArr.sort((gerneA, genreB) => gerneA.count > genreB.count ? -1 : 1).slice(0, 5); // Return our sorted and sliced array
 }
+
 
 function mostPopularBooks(books) {
   const returnArr = []; // Declare our empty return array
